@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dpk.wgj.mapper.SelectParamMapper">
+<resultMap id="OrderInfoMap" type="com.dpk.wgj.bean.OrderInfo">
+    <id column="order_id" property="orderId"/>
+    <result column="passenger_id" property="passengerId"/>
+    <result column="driver_id" property="driverId"/>
+    <result column="location_info" property="locationInfo"/>
+    <result column="order_status" property="orderStatus"/>
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+</resultMap>
+
+
+<select id="getMonthOrderInfoByYear"  parameterType="int" resultType="com.dpk.wgj.bean.MonthInfo"  >
+    select
+    sum(case month(order_info.end_time) when '1' then 1 else 0 end) as January,
+    sum(case month(order_info.end_time) when '2' then 1 else 0 end) as February,
+    sum(case month(order_info.end_time) when '3' then 1 else 0 end) as March,
+    sum(case month(order_info.end_time) when '4' then 1 else 0 end) as April,
+    sum(case month(order_info.end_time) when '5' then 1 else 0 end) as May,
+    sum(case month(order_info.end_time) when '6' then 1 else 0 end) as June,
+    sum(case month(order_info.end_time) when '7' then 1 else 0 end) as July,
+    sum(case month(order_info.end_time) when '8' then 1 else 0 end) as August,
+    sum(case month(order_info.end_time) when '9' then 1 else 0 end) as September,
+    sum(case month(order_info.end_time) when '10' then 1 else 0 end) as October,
+    sum(case month(order_info.end_time) when '11' then 1 else 0 end) as November,
+    sum(case month(order_info.end_time) when '12' then 1 else 0 end) as December
+    from (order_info)
+    where year(order_info.end_time)=#{year,jdbcType=INTEGER};
+</select>
+
+<!--<select id="getOrderByMonth" resultType="int">-->
+    <!--SELECT count(end_time) FROM order_info WHERE MONTH(end_time) =#{month}-->
+<!--</select>-->
+
+<!--&lt;!&ndash;<select id="getOrderByYear" resultMap="OrderInfoMap">&ndash;&gt;-->
+<!--&lt;!&ndash;SELECT * FROM order_info&ndash;&gt;-->
+<!--&lt;!&ndash;</select>&ndash;&gt;-->
+
+<!--<select id="getOrderByDriverId" resultMap="OrderInfoMap">-->
+    <!--SELECT order_id,passenger_id, driver_id,location_info,order_status,-->
+    <!--start_time,end_time FROM order_info WHERE driver_id =#{driver_id}-->
+<!--</select>-->
+
+<!--<select id="getAllOrderNum" resultMap="OrderInfoMap">-->
+    <!--SELECT order_id,passenger_id, driver_id,location_info,order_status,-->
+    <!--start_time,end_time FROM order_info-->
+<!--</select>-->
+
+</mapper>

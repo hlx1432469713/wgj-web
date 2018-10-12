@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dpk.wgj.mapper.AdminInfoMapper">
+    <resultMap id="AdminInfoMap" type="com.dpk.wgj.bean.AdminInfo">
+        <id column="user_id" property="userId"/>
+        <result column="username" property="username"/>
+        <result column="realname" property="realname"/>
+        <result column="password" property="password"/>
+        <result column="phonenumber " property="phonenumber "/>
+        <result column="authority_id" property="authorityId"/>
+        <result column="user_group_id" property="userGroupId"/>
+    </resultMap>
+
+    <select id="getAdminByUsername" resultMap="AdminInfoMap">
+        SELECT realname,username, password,phonenumber, user_group_id, authority_id FROM admin_info
+        WHERE username = #{username}
+    </select>
+
+    <select id="getAllAdminInfo" resultMap="AdminInfoMap" >
+        SELECT * FROM admin_info
+        <where>
+            1=1
+            <if test="adminInfo!=null">
+            <if test="adminInfo.username != null and adminInfo.username !=''">
+                AND username LIKE "%"#{adminInfo.username,jdbcType=VARCHAR}"%"
+            </if>
+            </if>
+        </where>
+        ORDER BY ${sort} ${order} LIMIT #{offset},#{limit}
+    </select>
+
+    <select id="getAllAdminInfoCount" resultType="int" >
+        SELECT COUNT(*) FROM admin_info
+        <where>
+            1=1
+            <if test="adminInfo!=null">
+            <if test="adminInfo.username != null and adminInfo.username !=''">
+                AND username LIKE "%"#{adminInfo.username,jdbcType=VARCHAR}"%"
+            </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="getUserInfoById" resultMap="AdminInfoMap" parameterType="int">
+        SELECT * FROM admin_info
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="addAdminInfo" parameterType="AdminInfo" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO admin_info (username,realname,phonenumber, password, authority_id)
+        VALUES (#{username},#{realname} ,#{phonenumber}, #{password},  #{authorityId})
+    </insert>
+
+    <update id="updateAdminInfo" parameterType="AdminInfo">
+        update admin_info
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null and password != ''" >
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phonenumber != null and phonenumber != ''" >
+                phonenumber = #{phonenumber,jdbcType=VARCHAR},
+            </if>
+            <if test="realname != null and realname != ''">
+                realname = #{realname,jdbcType=INTEGER},
+            </if>
+            <if test="authorityId != null and authorityId != ''">
+                authority_id = #{authorityId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteAdminInfoById" parameterType="int">
+        DELETE from admin_info WHERE user_id = #{userId}
+    </delete>
+
+</mapper>
